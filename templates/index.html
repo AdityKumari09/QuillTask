@@ -1,0 +1,29 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-sm-8">
+            <form action="/" method="POST">
+                <div class="input-group mb-3">
+                    <input type="text" name="title" placeholder="Enter title" class="form-control">
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+            {% for todo in todos %}
+            <div class="row mt-2">
+                <div class="col-8">{{todo.title}}</div>
+                <div class="col-4 text-right">
+                    <a href="/" class="btn btn-dark btn-sm">Edit</a>
+                    <a href="/" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
