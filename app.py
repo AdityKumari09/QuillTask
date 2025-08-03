@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 
@@ -37,6 +37,15 @@ def index(todo_id=None):
     todos= Todo.query.order_by(Todo.id.desc()).all()
 
     return render_template('index.html',todos= todos,todo=todo)
+
+@app.route('/todo-delete/<int:todo_id>',methods=["POST"])
+def delete(todo_id):
+    todo = Todo.query.get(todo_id)
+    if todo:
+        db.session.delete(todo)
+        db.session.commit()
+
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
