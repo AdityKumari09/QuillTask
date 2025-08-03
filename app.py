@@ -23,12 +23,13 @@ def index(todo_id=None):
             todo = Todo(title=title)
             db.session.add(todo)
             db.session.commit()
+            flash('Todo item added successfully','success')
         else:
             todo = Todo.query.get(todo_id)
             if todo:
                 todo.title = title
                 db.session.commit()
-
+                flash('Todo item updated successfully','success')
         return redirect(url_for('index'))        
 
     todo = None
@@ -44,6 +45,7 @@ def delete(todo_id):
     if todo:
         db.session.delete(todo)
         db.session.commit()
+        flash('Todo item deleted successfully','success')
 
     return redirect(url_for('index'))
 
