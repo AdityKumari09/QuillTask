@@ -4,14 +4,16 @@
 <div class="min-h-screen bg-slate-50 dark:bg-gray-900 py-12 px-4 text-gray-800 dark:text-gray-100">
   <div class="max-w-7xl mx-auto">
 
-    <!-- App Title -->
-    <section class="text-center mb-10">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 dark:text-indigo-400 tracking-tight mb-3">
-        Turn Plans into Progress.
-      </h1>
-      <p class="text-base md:text-lg text-slate-600 dark:text-slate-300 md:tracking-wide">
-        Simplify your workflow. Stay on track and get things done.
-      </p>
+    <!-- Animated Hero Section -->
+    <section class="relative text-center mb-12 overflow-hidden">
+      <div class="relative z-10 animate-fade-slide-up">
+        <h2 class="animate-fade-slide text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text leading-tight pb-2">
+          Turn Plans into Progress
+        </h2>
+        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">
+          Simplify your workflow. Stay on track and get things done
+        </p>
+      </div>
     </section>
 
     <!-- Flash Messages -->
@@ -52,19 +54,26 @@
         ('In Progress', progress_tasks, '⏳'),
         ('Completed', completed_tasks, '✅')
       ] %}
+
+      {% set bg_class = "bg-indigo-50 dark:bg-indigo-900" if group == "To Do" else
+                        "bg-yellow-50 dark:bg-yellow-900" if group == "In Progress" else
+                        "bg-green-50 dark:bg-green-900" %}
+
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md px-6 py-6">
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-300">{{ icon }} {{ group }}</h2>
-          <span class="text-xs text-slate-400 dark:text-slate-300">{{ tasks|length }} {{ tasks|length == 1 and 'task' or 'tasks' }}</span>
+          <span class="text-xs text-slate-400 dark:text-slate-300">
+            {{ tasks|length }} {{ tasks|length == 1 and 'task' or 'tasks' }}
+          </span>
         </div>
 
         {% if tasks %}
         {% for task in tasks %}
-        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-md mb-4 flex justify-between items-start hover:shadow-sm transition">
+        <div class="{{ bg_class }} border border-slate-200 dark:border-slate-700 p-4 rounded-xl mb-4 flex justify-between items-start hover:shadow-md transition">
           <form method="POST" action="{{ url_for('update_status', todo_id=task.id) }}" class="flex-1">
             <label class="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" name="status" value="completed" onchange="this.form.submit()"
-                class="mt-1 w-5 h-5 accent-slate-600"
+                class="mt-1 w-5 h-5 accent-indigo-600 dark:accent-indigo-400"
                 {% if task.status == 'completed' %}checked disabled{% endif %} />
               <span class="{% if task.status == 'completed' %}line-through text-slate-500 dark:text-slate-400{% else %}text-slate-800 dark:text-slate-100{% endif %}">
                 {{ task.title }}
@@ -73,7 +82,7 @@
           </form>
           <div class="flex flex-col gap-2 ml-4">
             <a href="/{{ task.id }}"
-              class="text-sm bg-slate-500 text-white px-3 py-1 rounded hover:bg-slate-600 transition">Edit</a>
+              class="text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition">Edit</a>
             <form method="POST" action="{{ url_for('delete', todo_id=task.id) }}"
               onsubmit="return confirm('Are you sure you want to delete this task?');">
               <button class="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Delete</button>
