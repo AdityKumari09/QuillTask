@@ -55,9 +55,9 @@
         ('Completed', completed_tasks, '✅')
       ] %}
 
-      {% set bg_class = "bg-indigo-50 dark:bg-indigo-900" if group == "To Do" else
-                        "bg-yellow-50 dark:bg-yellow-900" if group == "In Progress" else
-                        "bg-green-50 dark:bg-green-900" %}
+      {% set bg_class = "bg-indigo-50 dark:bg-slate-700" if group == "To Do" else
+                        "bg-yellow-50 dark:bg-slate-700" if group == "In Progress" else
+                        "bg-green-50 dark:bg-slate-700" %}
 
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md px-6 py-6">
         <div class="flex items-center justify-between mb-5">
