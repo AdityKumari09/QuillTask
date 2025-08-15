@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to QUILLTASK</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-sm mx-auto p-8 bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 backdrop-blur-md bg-opacity-80">
+        <div class="flex flex-col items-center mb-8">
+            <!-- Logo from static folder -->
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" class="w-20 h-20 mb-4 rounded-full shadow-lg border-2 border-indigo-400">
+            <h2 class="text-4xl font-bold text-center text-white tracking-wide">Welcome to QUILLTASK</h2>
+        </div>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="p-4 rounded-xl text-sm font-medium {% if category == 'danger' %}bg-red-600 text-white{% elif category == 'success' %}bg-green-600 text-white{% endif %} shadow-md">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                <input type="email" id="email" name="email" required
+                    class="block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white placeholder-gray-400 transition-colors duration-200"
+                    placeholder="Enter your email address" />
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white placeholder-gray-400 transition-colors duration-200"
+                    placeholder="Enter your password" />
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 px-4 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                style="background: linear-gradient(90deg, #6366f1, #8b5cf6);">
+                Login
+            </button>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-gray-400">
+            Don't have an account?
+            <a href="{{ url_for('register') }}" class="font-medium text-indigo-400 hover:text-indigo-300 ml-1 transition-colors duration-200">Register now</a>
+        </p>
+    </div>
+
+</body>
+</html>

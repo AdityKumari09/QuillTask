@@ -1,79 +1,147 @@
 <!DOCTYPE html>
 <html lang="en" class="">
 <head>
-  <meta charset="UTF-8" />
-  <title>QuillTask</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>QuillTask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Tailwind Config -->
-  <script>
-  tailwind.config = {
-    darkMode: 'class',
-    theme: {
-      extend: {
-        animation: {
-          'fade-slide': 'fadeSlide 0.6s ease-out both',
-        },
-        keyframes: {
-          fadeSlide: {
-            '0%': { opacity: '0', transform: 'translateY(-10px)' },
-            '100%': { opacity: '1', transform: 'translateY(0)' },
+    <!-- Tailwind Config -->
+    <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            'fade-slide': 'fadeSlide 0.6s ease-out both',
+          },
+          keyframes: {
+            fadeSlide: {
+              '0%': { opacity: '0', transform: 'translateY(-10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
           }
         }
       }
-    }
-  };
-</script>
+    };
+    </script>
 
-  <!-- Apply saved theme -->
-  <script>
-    if (localStorage.getItem("theme") === "dark") {
-      document.documentElement.classList.add("dark");
-    }
-  </script>
+    <!-- Apply saved theme -->
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+    <style>
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #1f2937; /* Dark Gray */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 100;
+            border-radius: 0.5rem;
+            min-width: 150px;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .profile-button {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="bg-slate-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
-  <!-- Navbar -->
-<nav class="animate-fade-slide w-full bg-slate-100 dark:bg-gray-800 shadow px-6 py-4 flex justify-between items-center">
+    <!-- Navbar -->
+    <nav class="animate-fade-slide w-full bg-slate-100 dark:bg-gray-800 shadow px-6 py-4 flex justify-between items-center">
 
-    <!-- Logo Left -->
-    <div class="flex items-center gap-3">
-      <img src="{{ url_for('static', filename='logo.png') }}" alt="QuillTask Logo" class="h-10 w-10 rounded-full shadow-md" />
-      <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300">QuillTask</h1>
-    </div>
+        <!-- Logo Left -->
+        <div class="flex items-center gap-3">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="QuillTask Logo" class="h-10 w-10 rounded-full shadow-md" />
+            <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300">QuillTask</h1>
+        </div>
 
-    <!-- Toggle Right -->
-    <button id="theme-toggle"
-      class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-xl text-gray-800 dark:text-gray-200 shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300">
-      🌞
-    </button>
-  </nav>
+        <!-- Right-side actions -->
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-xl text-gray-800 dark:text-gray-200 shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300">
+                🌞
+            </button>
+            
+            {% if current_user.is_authenticated %}
+            <div class="relative">
+                <button id="profile-btn" class="profile-button flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    {{ current_user.name[0] | upper }}
+                </button>
+                <div id="dropdown-menu" class="dropdown-menu bg-gray-800 text-gray-100 mt-2 py-2 w-48 rounded-md shadow-lg right-0">
+                    <div class="px-4 py-2 border-b border-gray-700">
+                        <p class="text-sm font-semibold">{{ current_user.name }}</p>
+                        <p class="text-xs text-gray-400">{{ current_user.email }}</p>
+                    </div>
+                    <a href="{{ url_for('logout') }}"
+                       class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-700"
+                       onclick="return confirmLogout('{{ current_user.email }}');">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-100 font-semibold transition-colors duration-200">
+                Login
+            </a>
+            {% endif %}
 
-  <!-- Main Content -->
-  {% block content %}{% endblock %}
+        </div>
+    </nav>
 
-  <!-- Dark Mode Toggle Script -->
-  <script>
-    const toggleBtn = document.getElementById("theme-toggle");
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
 
-    function setIcon() {
-      toggleBtn.textContent = document.documentElement.classList.contains("dark") ? "🌙" : "🌞";
-    }
+    <!-- Scripts -->
+    <script>
+        const toggleBtn = document.getElementById("theme-toggle");
 
-    setIcon();
+        function setIcon() {
+            toggleBtn.textContent = document.documentElement.classList.contains("dark") ? "🌙" : "🌞";
+        }
 
-    toggleBtn.addEventListener("click", () => {
-      const html = document.documentElement;
-      html.classList.toggle("dark");
-      const mode = html.classList.contains("dark") ? "dark" : "light";
-      localStorage.setItem("theme", mode);
-      setIcon();
-    });
-  </script>
+        setIcon();
+
+        toggleBtn.addEventListener("click", () => {
+            const html = document.documentElement;
+            html.classList.toggle("dark");
+            const mode = html.classList.contains("dark") ? "dark" : "light";
+            localStorage.setItem("theme", mode);
+            setIcon();
+        });
+
+        // Dropdown menu script
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileBtn = document.getElementById('profile-btn');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+
+            if (profileBtn && dropdownMenu) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                window.addEventListener('click', function(e) {
+                    if (!profileBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+
+            function confirmLogout(email) {
+                return confirm(`Are you sure you want to log out from ${email}?`);
+            }
+        });
+    </script>
 </body>
 </html>
