@@ -43,16 +43,18 @@
       }
     </script>
     <style>
-        /* This is the key CSS to fix the mobile dropdown */
         .dropdown-menu {
             display: none;
             opacity: 0;
             transform: translateY(10px);
             transition: all 0.3s ease-in-out;
-            position: absolute; /* This makes it position relative to the parent */
-            right: 0; /* This aligns it to the right, preventing it from going off-screen */
+            position: absolute;
+            right: 0;
             z-index: 50;
-            min-width: 12rem; /* Give it a minimum width */
+            min-width: 12rem;
+            background-color: #1f2937;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
         }
         .dropdown-menu.show {
             display: block;
@@ -67,7 +69,7 @@
 
 <body class="bg-slate-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
-    <!-- Navbar (Original design maintained) -->
+    <!-- Navbar -->
     <nav class="animate-fade-slide w-full bg-slate-100 dark:bg-gray-800 shadow px-6 py-4 flex justify-between items-center">
 
         <!-- Logo Left -->
@@ -84,18 +86,17 @@
             </button>
             
             {% if current_user.is_authenticated %}
+            <!-- The crucial fix is here: 'relative' class added to this div -->
             <div class="relative">
                 <button id="profile-btn" class="profile-button flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     {{ current_user.name[0] | upper }}
-                    <!-- Add an arrow icon to indicate a dropdown -->
                     <i class="fas fa-chevron-down text-sm ml-1 transition-transform duration-200" id="dropdown-icon"></i>
                 </button>
-                <div id="dropdown-menu" class="dropdown-menu bg-gray-800 text-gray-100 mt-2 py-2 w-48 rounded-md shadow-lg right-0">
+                <div id="dropdown-menu" class="dropdown-menu mt-2 py-2 w-48 right-0">
                     <div class="px-4 py-2 border-b border-gray-700">
                         <p class="text-sm font-semibold">{{ current_user.name }}</p>
                         <p class="text-xs text-gray-400">{{ current_user.email }}</p>
                     </div>
-                    <!-- Logout link fixed -->
                     <a href="{{ url_for('logout') }}"
                        class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-700">
                         <i class="fas fa-sign-out-alt mr-2"></i> Logout
@@ -132,7 +133,6 @@
             setIcon();
         });
 
-        // Dropdown menu script (Refactored)
         document.addEventListener('DOMContentLoaded', function() {
             const profileBtn = document.getElementById('profile-btn');
             const dropdownMenu = document.getElementById('dropdown-menu');
