@@ -42,27 +42,34 @@ def register():
         return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
-        name = request.form.get('name')
+        # Yahan par 'username' likha gaya hai, taki yeh HTML form ke name attribute se match kare.
+        username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        user = User.query.filter_by(email=email).first()
-        if user:
-            flash('Email already registered!', 'danger')
+        user_by_name = User.query.filter_by(name=username).first()
+        if user_by_name:
+            flash('Username already exists!', 'danger')
             return redirect(url_for('register'))
         
+        user_by_email = User.query.filter_by(email=email).first()
+        if user_by_email:
+            flash('Email already registered!', 'danger')
+            return redirect(url_for('register'))
+            
         if password != confirm_password:
             flash('Passwords do not match!', 'danger')
             return redirect(url_for('register'))
-
-        new_user = User(name=name, email=email, password=generate_password_hash(password)) # Here is the change
+            
+        new_user = User(name=username, email=email, password=generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully!', 'success')
         return redirect(url_for('login'))
         
     return render_template('layouts/register.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
