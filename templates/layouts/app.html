@@ -43,7 +43,7 @@
       }
     </script>
     <style>
-        /* CSS to manage the dropdown's display state */
+        /* CSS to manage the dropdown's display state and max-width on mobile */
         .dropdown-menu {
             display: none;
             opacity: 0;
@@ -52,8 +52,9 @@
             position: absolute;
             right: 0;
             z-index: 50;
-            max-width: 14rem; /* Restrict max-width for mobile */
-            white-space: nowrap; /* Prevent text from wrapping inside the dropdown */
+            /* FIX: Set a max-width to prevent overflow on small screens */
+            max-width: 14rem;
+            /* REMOVED: white-space: nowrap; This was causing the menu to expand beyond the screen */
         }
         .dropdown-menu.show {
             display: block;
@@ -90,10 +91,8 @@
                     {{ current_user.name[0] | upper }}
                     <i class="fas fa-chevron-down text-sm ml-1 transition-transform duration-200" id="dropdown-icon"></i>
                 </button>
-                <!-- FIX: Added truncate class to handle long emails on mobile -->
                 <div id="dropdown-menu" class="dropdown-menu mt-2 py-2 w-auto right-0 rounded-md shadow-lg bg-white dark:bg-gray-800 border dark:border-gray-700">
                     <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <!-- 'truncate' class will prevent the email text from overflowing -->
                         <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ current_user.email }}</p>
                     </div>
                     <a href="{{ url_for('logout') }}"
