@@ -2,11 +2,14 @@
 <html lang="en" class="">
 <head>
     <meta charset="UTF-8" />
-    <title>QuillTask</title>
+    <title>QuillTask - {% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/a10f0f4961.js" crossorigin="anonymous"></script>
 
     <!-- Tailwind Config -->
     <script>
@@ -16,11 +19,16 @@
         extend: {
           animation: {
             'fade-slide': 'fadeSlide 0.6s ease-out both',
+            'fade-in': 'fadeIn 0.3s ease-in-out',
           },
           keyframes: {
             fadeSlide: {
               '0%': { opacity: '0', transform: 'translateY(-10px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
             }
           }
         }
@@ -35,19 +43,21 @@
       }
     </script>
     <style>
+        /* This is the key CSS to fix the mobile dropdown */
         .dropdown-menu {
             display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: #1f2937; /* Dark Gray */
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            z-index: 100;
-            border-radius: 0.5rem;
-            min-width: 150px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease-in-out;
+            position: absolute; /* This makes it position relative to the parent */
+            right: 0; /* This aligns it to the right, preventing it from going off-screen */
+            z-index: 50;
+            min-width: 12rem; /* Give it a minimum width */
         }
         .dropdown-menu.show {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
         .profile-button {
             cursor: pointer;
@@ -57,7 +67,7 @@
 
 <body class="bg-slate-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
-    <!-- Navbar -->
+    <!-- Navbar (Original design maintained) -->
     <nav class="animate-fade-slide w-full bg-slate-100 dark:bg-gray-800 shadow px-6 py-4 flex justify-between items-center">
 
         <!-- Logo Left -->
@@ -77,15 +87,17 @@
             <div class="relative">
                 <button id="profile-btn" class="profile-button flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     {{ current_user.name[0] | upper }}
+                    <!-- Add an arrow icon to indicate a dropdown -->
+                    <i class="fas fa-chevron-down text-sm ml-1 transition-transform duration-200" id="dropdown-icon"></i>
                 </button>
                 <div id="dropdown-menu" class="dropdown-menu bg-gray-800 text-gray-100 mt-2 py-2 w-48 rounded-md shadow-lg right-0">
                     <div class="px-4 py-2 border-b border-gray-700">
                         <p class="text-sm font-semibold">{{ current_user.name }}</p>
                         <p class="text-xs text-gray-400">{{ current_user.email }}</p>
                     </div>
+                    <!-- Logout link fixed -->
                     <a href="{{ url_for('logout') }}"
-                       class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-700"
-                       onclick="return confirmLogout('{{ current_user.email }}');">
+                       class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-700">
                         <i class="fas fa-sign-out-alt mr-2"></i> Logout
                     </a>
                 </div>
@@ -120,26 +132,31 @@
             setIcon();
         });
 
-        // Dropdown menu script
+        // Dropdown menu script (Refactored)
         document.addEventListener('DOMContentLoaded', function() {
             const profileBtn = document.getElementById('profile-btn');
             const dropdownMenu = document.getElementById('dropdown-menu');
+            const dropdownIcon = document.getElementById('dropdown-icon');
 
             if (profileBtn && dropdownMenu) {
                 profileBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    dropdownMenu.classList.toggle('show');
+                    const isVisible = dropdownMenu.classList.contains('show');
+                    if (isVisible) {
+                        dropdownMenu.classList.remove('show');
+                        dropdownIcon.classList.remove('rotate-180');
+                    } else {
+                        dropdownMenu.classList.add('show');
+                        dropdownIcon.classList.add('rotate-180');
+                    }
                 });
 
                 window.addEventListener('click', function(e) {
                     if (!profileBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
                         dropdownMenu.classList.remove('show');
+                        dropdownIcon.classList.remove('rotate-180');
                     }
                 });
-            }
-
-            function confirmLogout(email) {
-                return confirm(`Are you sure you want to log out from ${email}?`);
             }
         });
     </script>
